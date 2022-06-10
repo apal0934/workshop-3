@@ -1,66 +1,86 @@
 import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { Container } from 'react-bootstrap';
+import { Container, Stack } from 'react-bootstrap';
 import Input from '../components/Input';
-import Select from '../components/Select';
+import ComponentState from '../types/ComponentState';
+import LoginData from '../types/LoginData';
 
 interface LoginProps {
-    username: string;
-    password: string;
-    loggedIn: boolean;
-    readyCallback: Function;
+    loginData: LoginData;
+    callback: Function;
 }
 
-const LoginField = ({username, password, loggedIn, readyCallback} : LoginProps) => {
-    const [_username, setUsername] = useState(username);
-    const [_password, setPassword] = useState(password);
-    const [_loggedIn, setLoggedIn] = useState(loggedIn);
+const LoginField = ({ loginData, callback }: LoginProps) => {
+    const [username, setUsername] = useState(loginData.username);
+    const [password, setPassword] = useState(loginData.password);
+    const [isLoggedIn, setisLoggedIn] = useState(loginData.isLoggedIn);
 
     const handleLogin = (event: React.MouseEvent) => {
         event.preventDefault();
 
         // check credentials agaisnt server
-        setLoggedIn(!_loggedIn);
+        var isLoggedIn = true;
+        setisLoggedIn(isLoggedIn);
+       
+        if (isLoggedIn) {
+            callback(ComponentState.LoggedIn, {
+                username: username,
+                password: password,
+                isLoggedIn: true
+            });
+        }
+    }
+
+    const handleLogout = (event: React.MouseEvent) => {
+        event.preventDefault();
+        
+        setisLoggedIn(false);
+        callback(ComponentState.LoggedOut, {
+            username: "",
+            password: "",
+            isLoggedIn: false
+        });
+        
     }
 
     const handleReady = (event: React.MouseEvent) => {
         event.preventDefault();
 
-        if (_loggedIn) {
-            readyCallback({
-                username: _username,
-                password: _password,
-                loggedIn: _loggedIn
+        if (isLoggedIn) {
+            callback(ComponentState.Ready, {
+                username: username,
+                password: password,
+                isLoggedIn: true
             });
         }
     }
 
     return (
-        <Container>
-            <Form>
-                <Input label="Username" 
-                                value={_username} 
-                                onChange={e => setUsername(e.target.value)}
-                                disabled={_loggedIn} />
+        <Form>
+            <Container>
+                <Stack gap={3} className="col-md-9 mx-auto">
+                    <Input label="Username"
+                        value={username}
+                        onChange={e => setUsername(e.target.value)}
+                        disabled={isLoggedIn} />
 
-                <Input label="Password" 
-                                value={_password} 
-                                onChange={e => setPassword(e.target.value)}
-                                disabled={_loggedIn} />
+                    <Input label="Password"
+                        value={password}
+                        onChange={e => setPassword(e.target.value)}
+                        disabled={isLoggedIn} />
 
-                <Select label="Outcome"
-                        options={["Option 1", "Option 2"]} />
-                
-                <Button variant="primary" onClick={handleLogin}>
-                    {_loggedIn ? "Logout" : "Login"}
-                </Button>
-
-                <Button variant='primary' onClick={handleReady} disabled={!_loggedIn}>
-                    Available
-                </Button>
-            </Form>
-        </Container>
+                    <Stack direction='horizontal' gap={1}> 
+                        <Button variant="primary" onClick={isLoggedIn ? handleLogout : handleLogin} className="col-md-5 mx-auto">
+                            {isLoggedIn ? "Logout" : "Login"}
+                        </Button> 
+                        <Button variant='primary' onClick={handleReady} disabled={!isLoggedIn} className="col-md-5 mx-auto">
+                            Ready
+                        </Button>
+                    </Stack>
+                </Stack>
+            </Container>
+        </Form>
     )
 }
 

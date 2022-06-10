@@ -1,28 +1,58 @@
-import React, { useState } from 'react';
-import ComponentState from "../components/ComponentState";
+import React, { ReactElement, useState } from 'react';
+import ComponentState from "../types/ComponentState";
+import Header from '../components/Header';
+import LoginData from '../types/LoginData';
+import TicketData from '../types/TicketData';
+import UserData from '../types/UserData';
 import LoginField from './Login';
+import Ready from './Ready';
 
 const MainPage = () => {
     const [state, setState] = useState(ComponentState.LoggedOut);
-    const [loginData, setLoginData] = useState({
-        username: "",
-        password: "",
-        loggedIn: false
-    })
+    const [loginData, setLoginData] = useState<LoginData>({username: "", password: "", isLoggedIn: false});
+    const [userData, setUserData] = useState<UserData>({username: "", extension: "", campaign: ""});
+    const [ticketData, setTicketData] = useState<TicketData>({
+        contactName: "",
+        contactNumber: "",
+        ticketType: "",
+        outcome: "",
+        callbackDate: ""
+    });
 
-    const handleLogin = (loginData: {username: string, password: string, loggedIn: boolean}) => {
-        setState(ComponentState.Available);
+    const handleUser = (state: ComponentState, loginData: LoginData) => {
+        setState(state);
         setLoginData(loginData);
     }
 
+    const handleReady = (state: ComponentState, userData: UserData, ticketData: TicketData) => {
+        setState(state);
+        setUserData(userData);
+        setTicketData(ticketData);
+    }
+
+    var body: Element | ReactElement<any, any>;
     switch (state) {
         case ComponentState.LoggedOut:
-            return <LoginField {...loginData} readyCallback={handleLogin}/>
-        case ComponentState.Available:
-            return <h1>available</h1>;
+        case ComponentState.LoggedIn:
+        case ComponentState.OnBreak:
+            body = <LoginField loginData={loginData} callback={handleUser}/>
+            break;
+        case ComponentState.Dialling:
+        case ComponentState.OnCall:
+        case ComponentState.OffCall:
+        case ComponentState.Ready:
+            body = <Ready userData={userData} ticketData={ticketData} callback={handleReady} state={state}/>;
+            break;
         default:
-            return <h1>Error: Unknown state</h1>
+            body = <h1>Error: Unknown state</h1>
     }
+
+    return (
+        <div>
+            <Header state={state}/>
+            {body}
+        </div>
+    )
 }
 
 export default MainPage;
