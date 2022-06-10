@@ -13,7 +13,7 @@ const MainPage = () => {
         username: "",
         password: "",
         isLoggedIn: false,
-        serverAddress: ""
+        serverAddress: "",
     });
     const [userData, setUserData] = useState<UserData>({
         username: "",
@@ -33,13 +33,8 @@ const MainPage = () => {
         setLoginData(loginData);
     };
 
-    const handleReady = (
-        state: UserState,
-        userData: UserData,
-        ticketData: TicketData
-    ) => {
+    const handleReady = (state: UserState, ticketData: TicketData) => {
         setState(state);
-        setUserData(userData);
         setTicketData(ticketData);
     };
 

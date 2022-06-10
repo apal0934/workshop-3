@@ -28,31 +28,16 @@ interface ReadyProps {
 }
 
 const Ready = ({ userData, ticketData, state, callback }: ReadyProps) => {
-    const [username, setUsername] = useState(userData.username);
-    const [extension, setExtension] = useState(userData.extension);
-    const [campaign, setCampaign] = useState(userData.campaign);
-
-    const [contactName, setContactName] = useState(ticketData.contactName);
-    const [contactNumber, setContactNumber] = useState(ticketData.contactNumber);
-    const [ticketType, setTicketType] = useState(ticketData.ticketType);
     const [outcome, setOutcome] = useState(ticketData.outcome);
     const [callbackDate, setCallbackDate] = useState(ticketData.callbackDate);
 
     const options = ["Option 1", "Option 2"];
 
-    const getUserData = () => {
-        return {
-            username: username,
-            extension: extension,
-            campaign: campaign,
-        };
-    };
-
     const getTicketData = () => {
         return {
-            contactName: contactName,
-            contactNumber: contactNumber,
-            ticketType: ticketType,
+            contactName: ticketData.contactName,
+            contactNumber: ticketData.contactNumber,
+            ticketType: ticketData.ticketType,
             outcome: outcome,
             callbackDate: callbackDate,
         };
@@ -61,37 +46,38 @@ const Ready = ({ userData, ticketData, state, callback }: ReadyProps) => {
     const handleBreak = (event: React.MouseEvent) => {
         event.preventDefault();
 
-        callback(UserState.OnBreak, getUserData(), getTicketData());
+        callback(UserState.OnBreak, getTicketData());
     };
 
     const handleCall = (event: React.MouseEvent) => {
         event.preventDefault();
 
-        callback(UserState.OnCall, getUserData(), getTicketData());
+        callback(UserState.OnCall, getTicketData());
     };
 
     const handleHangup = (event: React.MouseEvent) => {
         event.preventDefault();
 
-        callback(UserState.OffCall, getUserData(), getTicketData());
+        callback(UserState.OffCall, getTicketData());
     };
 
     const handleOutcome = (event: React.MouseEvent) => {
         event.preventDefault();
 
-        callback(UserState.Ready, getUserData(), getTicketData());
+        callback(UserState.Ready, getTicketData());
     };
 
     const handleCallback = (event: React.MouseEvent) => {
         event.preventDefault();
 
-        callback(UserState.Ready, getUserData(), getTicketData());
+        callback(UserState.Ready, getTicketData());
     };
 
     var canBreak = state === UserState.Ready;
     var canHangUp = state === UserState.Dialling || state === UserState.OnCall;
     var canMakeCall = state === UserState.OffCall;
-    var canSubmitOutcome = state === UserState.OffCall || state === UserState.OnCall;
+    var canSubmitOutcome =
+        state === UserState.OffCall || state === UserState.OnCall;
     var canSubmitCallback = canSubmitOutcome;
 
     return (
@@ -103,19 +89,19 @@ const Ready = ({ userData, ticketData, state, callback }: ReadyProps) => {
                             <Col>
                                 <PopulatedField
                                     label="User:"
-                                    value={username}
+                                    value={userData.username}
                                 />
                             </Col>
                             <Col>
                                 <PopulatedField
                                     label="Extension:"
-                                    value={extension}
+                                    value={userData.extension}
                                 />
                             </Col>
                             <Col>
                                 <PopulatedField
                                     label="Campaign:"
-                                    value={campaign}
+                                    value={userData.campaign}
                                 />
                             </Col>
                         </Stack>
@@ -143,13 +129,13 @@ const Ready = ({ userData, ticketData, state, callback }: ReadyProps) => {
                                         <Col>
                                             <PopulatedField
                                                 label="Contact Name:"
-                                                value={contactName}
+                                                value={ticketData.contactName}
                                             />
                                         </Col>
                                         <Col>
                                             <PopulatedField
                                                 label="Ticket Type:"
-                                                value={ticketType}
+                                                value={ticketData.ticketType}
                                             />
                                         </Col>
                                     </Row>
@@ -158,7 +144,7 @@ const Ready = ({ userData, ticketData, state, callback }: ReadyProps) => {
                                         <Col>
                                             <PopulatedField
                                                 label="Contact Number:"
-                                                value={contactNumber}
+                                                value={ticketData.contactNumber}
                                             />
                                         </Col>
 
