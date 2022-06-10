@@ -6,4 +6,4 @@ interface TicketData {
     callbackDate: string;
 }
 
-export default TicketData
+export default TicketData;

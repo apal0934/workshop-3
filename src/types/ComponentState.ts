@@ -5,7 +5,7 @@ enum UserState {
     Ready,
     OffCall,
     Dialling,
-    OnCall
+    OnCall,
 }
 
 export default UserState;

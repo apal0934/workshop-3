@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { Container, Nav, Navbar } from 'react-bootstrap';
-import UserState from '../types/ComponentState';
+import React, { useState } from "react";
+import { Container, Nav, Navbar } from "react-bootstrap";
+import UserState from "../types/ComponentState";
 
 interface HeaderProps {
     state: UserState;
 }
 
-const Header = ({state} : HeaderProps) => {
+const Header = ({ state }: HeaderProps) => {
     var text: string;
 
     switch (state) {
@@ -40,13 +40,15 @@ const Header = ({state} : HeaderProps) => {
             <Navbar variant="dark" bg="primary">
                 <Container>
                     <Navbar.Collapse className="justify-content-center">
-                        <Navbar.Text style={{color: "white"}}>{text}</Navbar.Text>
-                    </Navbar.Collapse>      
+                        <Navbar.Text style={{ color: "white" }}>
+                            {text}
+                        </Navbar.Text>
+                    </Navbar.Collapse>
                 </Container>
             </Navbar>
-            <br/>
+            <br />
         </div>
-    )
-}
+    );
+};
 
 export default Header;

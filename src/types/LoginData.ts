@@ -1,6 +1,6 @@
 interface LoginData {
     username: string;
-    password: string,
+    password: string;
     isLoggedIn: boolean;
 }
 
