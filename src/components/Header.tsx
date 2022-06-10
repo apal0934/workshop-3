@@ -10,6 +10,9 @@ const Header = ({ state }: HeaderProps) => {
     var text: string;
 
     switch (state) {
+        case UserState.Disconnected:
+            text = "Disconnected";
+            break;
         case UserState.LoggedOut:
             text = "Logged Out";
             break;

@@ -8,11 +8,12 @@ import LoginField from "./Login";
 import Ready from "./Ready";
 
 const MainPage = () => {
-    const [state, setState] = useState(UserState.LoggedOut);
+    const [state, setState] = useState(UserState.Disconnected);
     const [loginData, setLoginData] = useState<LoginData>({
         username: "",
         password: "",
         isLoggedIn: false,
+        serverAddress: ""
     });
     const [userData, setUserData] = useState<UserData>({
         username: "",
@@ -44,6 +45,7 @@ const MainPage = () => {
 
     var body: Element | ReactElement<any, any>;
     switch (state) {
+        case UserState.Disconnected:
         case UserState.LoggedOut:
         case UserState.LoggedIn:
         case UserState.OnBreak:

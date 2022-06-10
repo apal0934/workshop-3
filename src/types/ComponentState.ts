@@ -1,4 +1,5 @@
 enum UserState {
+    Disconnected,
     LoggedOut,
     LoggedIn,
     OnBreak,

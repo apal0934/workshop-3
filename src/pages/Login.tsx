@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
+import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Stack from "react-bootstrap/Stack";
@@ -17,6 +18,21 @@ const LoginField = ({ state, loginData, callback }: LoginProps) => {
     const [username, setUsername] = useState(loginData.username);
     const [password, setPassword] = useState(loginData.password);
     const [isLoggedIn, setisLoggedIn] = useState(loginData.isLoggedIn);
+    const [serverAddress, setServerAddress] = useState(loginData.serverAddress);
+
+    const handleConnect = (event: React.MouseEvent) => {
+        event.preventDefault();
+
+        var didConnect = true;
+        if (didConnect) {
+            callback(UserState.LoggedOut, {
+                username: "",
+                password: "",
+                isLoggedIn: false,
+                serverAddress: serverAddress
+            });
+        }
+    };
 
     const handleLogin = (event: React.MouseEvent) => {
         event.preventDefault();
@@ -30,6 +46,7 @@ const LoginField = ({ state, loginData, callback }: LoginProps) => {
                 username: username,
                 password: password,
                 isLoggedIn: true,
+                serverAddress: serverAddress
             });
         }
     };
@@ -42,6 +59,7 @@ const LoginField = ({ state, loginData, callback }: LoginProps) => {
             username: "",
             password: "",
             isLoggedIn: false,
+            serverAddress: serverAddress
         });
     };
 
@@ -53,10 +71,12 @@ const LoginField = ({ state, loginData, callback }: LoginProps) => {
                 username: username,
                 password: password,
                 isLoggedIn: true,
+                serverAddress: serverAddress
             });
         }
     };
 
+    var canConnect = state === UserState.Disconnected;
     var canLogin = state === UserState.LoggedOut;
     var canReady = state === UserState.LoggedIn || state === UserState.OnBreak;
 
@@ -65,14 +85,24 @@ const LoginField = ({ state, loginData, callback }: LoginProps) => {
             <Container>
                 <Stack gap={3} className="col-md-9 mx-auto">
                     <Input
-                        label="Username"
+                        label="Server Address:"
+                        value={serverAddress}
+                        onChange={e => setServerAddress(e.target.value)}
+                        disabled={!canConnect}
+                    />
+                    <Button onClick={handleConnect} disabled={!canConnect}>
+                        Connect
+                    </Button>
+
+                    <Input
+                        label="Username:"
                         value={username}
                         onChange={e => setUsername(e.target.value)}
                         disabled={!canLogin}
                     />
 
                     <Input
-                        label="Password"
+                        label="Password:"
                         value={password}
                         onChange={e => setPassword(e.target.value)}
                         disabled={!canLogin}
@@ -80,14 +110,12 @@ const LoginField = ({ state, loginData, callback }: LoginProps) => {
 
                     <Stack direction="horizontal" gap={1}>
                         <Button
-                            variant="primary"
                             onClick={isLoggedIn ? handleLogout : handleLogin}
                             className="col-md-5 mx-auto"
                         >
                             {isLoggedIn ? "Logout" : "Login"}
                         </Button>
                         <Button
-                            variant="primary"
                             onClick={handleReady}
                             disabled={!canReady}
                             className="col-md-5 mx-auto"
