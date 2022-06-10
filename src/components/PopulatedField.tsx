@@ -1,5 +1,5 @@
-import React, { ReactElement, useState } from "react";
-import { FloatingLabel, FormControlProps } from "react-bootstrap";
+import { FormControlProps } from "react-bootstrap";
+import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
 
 interface PopulatedFieldProps extends FormControlProps {

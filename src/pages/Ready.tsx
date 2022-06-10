@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import { Col, Container, Stack, Row, Card } from "react-bootstrap";
-import Input from "../components/Input";
+import Col from "react-bootstrap/Col";
+import Container from "react-bootstrap/Container";
+import Stack from "react-bootstrap/Stack";
+import Row from "react-bootstrap/Row";
+import Card from "react-bootstrap/Card";
 import Select from "../components/Select";
 import PopulatedField from "../components/PopulatedField";
 import UserState from "../types/ComponentState";
@@ -81,7 +84,7 @@ const Ready = ({ userData, ticketData, state, callback }: ReadyProps) => {
 
     const handleCallback = (event: React.MouseEvent) => {
         event.preventDefault();
-        
+
         callback(UserState.Ready, getUserData(), getTicketData());
     };
 

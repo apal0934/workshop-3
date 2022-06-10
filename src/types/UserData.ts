@@ -1,7 +1,5 @@
-interface UserData {
+export default interface UserData {
     username: string;
     extension: string;
     campaign: string;
 }
-
-export default UserData;

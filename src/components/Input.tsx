@@ -1,4 +1,5 @@
-import { FloatingLabel, FormControlProps } from "react-bootstrap";
+import { FormControlProps } from "react-bootstrap";
+import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
 
 interface InputProps extends FormControlProps {

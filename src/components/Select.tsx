@@ -1,4 +1,5 @@
-import { FloatingLabel, FormSelectProps } from "react-bootstrap";
+import { FormSelectProps } from "react-bootstrap";
+import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
 
 interface SelectProps extends FormSelectProps {

@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import { Container, Stack } from "react-bootstrap";
+import Container from "react-bootstrap/Container";
+import Stack from "react-bootstrap/Stack";
 import Input from "../components/Input";
 import UserState from "../types/ComponentState";
 import LoginData from "../types/LoginData";

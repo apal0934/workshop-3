@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Container, Nav, Navbar } from "react-bootstrap";
+import Container from "react-bootstrap/Container";
+import Navbar from "react-bootstrap/Navbar";
 import UserState from "../types/ComponentState";
 
 interface HeaderProps {
