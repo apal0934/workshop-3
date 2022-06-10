@@ -30,6 +30,7 @@ interface ReadyProps {
 const Ready = ({ userData, ticketData, state, callback }: ReadyProps) => {
     const [outcome, setOutcome] = useState(ticketData.outcome);
     const [callbackDate, setCallbackDate] = useState(ticketData.callbackDate);
+    const [dialTimer, setDialTimer] = useState<number>();
 
     const options = ["Option 1", "Option 2"];
 
@@ -43,6 +44,16 @@ const Ready = ({ userData, ticketData, state, callback }: ReadyProps) => {
         };
     };
 
+    const getEmptyTicketData = () => {
+        return {
+            contactName: "",
+            contactNumber: "",
+            ticketType: "",
+            outcome: "",
+            callbackDate: ""
+        }
+    }
+
     const handleBreak = (event: React.MouseEvent) => {
         event.preventDefault();
 
@@ -52,25 +63,31 @@ const Ready = ({ userData, ticketData, state, callback }: ReadyProps) => {
     const handleCall = (event: React.MouseEvent) => {
         event.preventDefault();
 
-        callback(UserState.OnCall, getTicketData());
+        callback(UserState.Dialling, getTicketData());
+
+        var id = window.setTimeout(() => {
+            callback(UserState.OnCall, getTicketData());
+        }, 2000);
+        setDialTimer(id);
     };
 
     const handleHangup = (event: React.MouseEvent) => {
         event.preventDefault();
 
+        clearTimeout(dialTimer);
         callback(UserState.OffCall, getTicketData());
     };
 
     const handleOutcome = (event: React.MouseEvent) => {
         event.preventDefault();
 
-        callback(UserState.Ready, getTicketData());
+        callback(UserState.Ready, getEmptyTicketData());
     };
 
     const handleCallback = (event: React.MouseEvent) => {
         event.preventDefault();
 
-        callback(UserState.Ready, getTicketData());
+        callback(UserState.Ready, getEmptyTicketData());
     };
 
     var canBreak = state === UserState.Ready;
