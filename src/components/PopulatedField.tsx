@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+import React, { ReactElement, useState } from 'react';
+import { FloatingLabel, FormControlProps } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
 
-interface PopulatedFieldProps {
+interface PopulatedFieldProps extends FormControlProps {
     label: string;
     value: string;
 }
 
-const PopulatedField = ({label, value} : PopulatedFieldProps) => {
+const PopulatedField = ({label, value, ...props} : PopulatedFieldProps) => {
     return (
         <Form.Group>
-            <Form.Label>{label}</Form.Label>
-            <Form.Control disabled value={value}/>
+            <FloatingLabel label={label}>
+                <Form.Control readOnly value={value} />
+            </FloatingLabel>
         </Form.Group>
     )
 }

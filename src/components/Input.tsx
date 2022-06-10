@@ -1,4 +1,4 @@
-import { FormControlProps } from 'react-bootstrap';
+import { FloatingLabel, FormControlProps } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
 
 interface InputProps extends FormControlProps {
@@ -8,8 +8,9 @@ interface InputProps extends FormControlProps {
 const Input = ({label, ...props} : InputProps) => {
     return (
         <Form.Group>
-            <Form.Label>{label}</Form.Label>
-            <Form.Control placeholder={`Enter ${label}`} {...props}/>
+            <FloatingLabel label={label}>
+                <Form.Control placeholder={`Enter ${label}`} {...props}/>
+            </FloatingLabel>
         </Form.Group>
     )
 }

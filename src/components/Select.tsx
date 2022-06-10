@@ -1,4 +1,4 @@
-import { FormSelectProps } from 'react-bootstrap';
+import { FloatingLabel, FormSelectProps } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
 
 interface SelectProps extends FormSelectProps {
@@ -9,10 +9,11 @@ interface SelectProps extends FormSelectProps {
 const Select = ({label, options, ...props} : SelectProps) => {
     return (
         <Form.Group>
-            <Form.Label>{label}</Form.Label>
-            <Form.Select {...props}>
-                {options.map(option => <option>{option}</option>)}
-            </Form.Select>
+            <FloatingLabel label={label}>
+                <Form.Select {...props}>
+                    {options.map(option => <option>{option}</option>)}
+                </Form.Select>
+            </FloatingLabel>
         </Form.Group>
     )
 }
