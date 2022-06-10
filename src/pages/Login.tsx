@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import { Container } from 'react-bootstrap';
 import Input from '../components/Input';
 import Select from '../components/Select';
 
@@ -36,28 +37,30 @@ const LoginField = ({username, password, loggedIn, readyCallback} : LoginProps) 
     }
 
     return (
-        <Form>
-            <Input label="Username" 
-                            value={_username} 
-                            onChange={e => setUsername(e.target.value)}
-                            disabled={_loggedIn} />
+        <Container>
+            <Form>
+                <Input label="Username" 
+                                value={_username} 
+                                onChange={e => setUsername(e.target.value)}
+                                disabled={_loggedIn} />
 
-            <Input label="Password" 
-                            value={_password} 
-                            onChange={e => setPassword(e.target.value)}
-                            disabled={_loggedIn} />
+                <Input label="Password" 
+                                value={_password} 
+                                onChange={e => setPassword(e.target.value)}
+                                disabled={_loggedIn} />
 
-            <Select label="Outcome"
-                    options={["Option 1", "Option 2"]} />
-            
-            <Button variant="primary" onClick={handleLogin}>
-                {_loggedIn ? "Logout" : "Login"}
-            </Button>
+                <Select label="Outcome"
+                        options={["Option 1", "Option 2"]} />
+                
+                <Button variant="primary" onClick={handleLogin}>
+                    {_loggedIn ? "Logout" : "Login"}
+                </Button>
 
-            <Button variant='primary' onClick={handleReady} disabled={!_loggedIn}>
-                Available
-            </Button>
-        </Form>
+                <Button variant='primary' onClick={handleReady} disabled={!_loggedIn}>
+                    Available
+                </Button>
+            </Form>
+        </Container>
     )
 }
 
