@@ -82,13 +82,13 @@ const Ready = ({userData, ticketData, state, callback} : ReadyProps) => {
           <Stack gap={3}>
             <Stack direction="horizontal" gap={2}>
               <Col>
-                <PopulatedField label="User:" value="Username" />
+                <PopulatedField label="User:" value={username} />
               </Col>
               <Col>
-                <PopulatedField label="Extension:" value="9999" />
+                <PopulatedField label="Extension:" value={extension} />
               </Col>
               <Col>
-                <PopulatedField label="Campaign:" value="Campaign" />
+                <PopulatedField label="Campaign:" value={campaign}/>
               </Col>
             </Stack>
 
@@ -113,11 +113,11 @@ const Ready = ({userData, ticketData, state, callback} : ReadyProps) => {
                     <Col>
                       <PopulatedField
                         label="Contact Name:"
-                        value="Contact Name"
+                        value={contactName}
                       />
                     </Col>
                     <Col>
-                      <PopulatedField label="Ticket Type:" value="Type 1" />
+                      <PopulatedField label="Ticket Type:" value={ticketType} />
                     </Col>
                   </Row>
 
@@ -125,7 +125,7 @@ const Ready = ({userData, ticketData, state, callback} : ReadyProps) => {
                     <Col>
                       <PopulatedField
                         label="Contact Number:"
-                        value="9999999999"
+                        value={contactNumber}
                       />
                     </Col>
 
@@ -136,9 +136,9 @@ const Ready = ({userData, ticketData, state, callback} : ReadyProps) => {
                 </Stack>
 
                 <Stack gap={3}>
-                  <Select label="Outcome" options={options} />
+                  <Select label="Outcome" options={options} value={outcome} onChange={e => setOutcome(e.target.value)} />
                   <Button onClick={handleOutcome}>Submit Outcome</Button>
-                  <Form.Control type="datetime-local" />
+                  <Form.Control type="datetime-local" value={callbackDate} onChange={e => setCallbackDate(e.target.value)}/>
                   <Button onClick={handleCallback}>Submit Callback</Button>
                 </Stack>
               </Stack>
