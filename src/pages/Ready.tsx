@@ -75,6 +75,12 @@ const Ready = ({userData, ticketData, state, callback} : ReadyProps) => {
     callback(UserState.Ready, getUserData(), getTicketData());
   }
 
+  var canBreak = state === UserState.Ready;
+  var canHangUp = state === UserState.Dialling || state === UserState.OnCall;
+  var canMakeCall = state === UserState.OffCall;
+  var canSubmitOutcome = state === UserState.OffCall || state === UserState.OnCall;
+  var canSubmitCallback = canSubmitOutcome;
+
   return (
     <Form>
       <Container>
@@ -97,7 +103,7 @@ const Ready = ({userData, ticketData, state, callback} : ReadyProps) => {
               gap={2}
               className="justify-content-center"
             >
-              <Button onClick={handleBreak}>Request Break</Button>
+              <Button onClick={handleBreak} disabled={!canBreak}>Request Break</Button>
             </Stack>
           </Stack>
 
@@ -129,17 +135,17 @@ const Ready = ({userData, ticketData, state, callback} : ReadyProps) => {
                       />
                     </Col>
 
-                    <Button variant="primary" onClick={handleCall}>Make Call</Button>
+                    <Button variant="primary" onClick={handleCall} disabled={!canMakeCall}>Make Call</Button>
                     <div className="vr" />
-                    <Button variant="danger" onClick={handleHangup}>Hang up</Button>
+                    <Button variant="danger" onClick={handleHangup} disabled={!canHangUp}>Hang up</Button>
                   </Stack>
                 </Stack>
 
                 <Stack gap={3}>
                   <Select label="Outcome" options={options} value={outcome} onChange={e => setOutcome(e.target.value)} />
-                  <Button onClick={handleOutcome}>Submit Outcome</Button>
+                  <Button onClick={handleOutcome} disabled={!canSubmitOutcome}>Submit Outcome</Button>
                   <Form.Control type="datetime-local" value={callbackDate} onChange={e => setCallbackDate(e.target.value)}/>
-                  <Button onClick={handleCallback}>Submit Callback</Button>
+                  <Button onClick={handleCallback} disabled={!canSubmitCallback}>Submit Callback</Button>
                 </Stack>
               </Stack>
             </Card.Body>
