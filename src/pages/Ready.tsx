@@ -56,22 +56,32 @@ const Ready = ({ userData, ticketData, state, callback }: ReadyProps) => {
     };
 
     const handleBreak = (event: React.MouseEvent) => {
+        event.preventDefault();
+
         callback(UserState.OnBreak, getUserData(), getTicketData());
     };
 
     const handleCall = (event: React.MouseEvent) => {
+        event.preventDefault();
+
         callback(UserState.OnCall, getUserData(), getTicketData());
     };
 
     const handleHangup = (event: React.MouseEvent) => {
+        event.preventDefault();
+
         callback(UserState.OffCall, getUserData(), getTicketData());
     };
 
     const handleOutcome = (event: React.MouseEvent) => {
+        event.preventDefault();
+
         callback(UserState.Ready, getUserData(), getTicketData());
     };
 
     const handleCallback = (event: React.MouseEvent) => {
+        event.preventDefault();
+        
         callback(UserState.Ready, getUserData(), getTicketData());
     };
 
