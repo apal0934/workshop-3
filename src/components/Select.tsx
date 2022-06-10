@@ -11,7 +11,7 @@ const Select = ({label, options, ...props} : SelectProps) => {
         <Form.Group>
             <FloatingLabel label={label}>
                 <Form.Select {...props}>
-                    {options.map(option => <option>{option}</option>)}
+                    {options.map(option => <option key={option}>{option}</option>)}
                 </Form.Select>
             </FloatingLabel>
         </Form.Group>
