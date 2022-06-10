@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
-import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Stack from "react-bootstrap/Stack";
@@ -23,6 +22,7 @@ const LoginField = ({ state, loginData, callback }: LoginProps) => {
     const handleConnect = (event: React.MouseEvent) => {
         event.preventDefault();
 
+        // check connection
         var didConnect = true;
         if (didConnect) {
             callback(UserState.LoggedOut, {

@@ -41,8 +41,9 @@ const MainPage = () => {
         clearTimeout(randomTicketTimer);
     };
 
+    // Give random ticket every five seconds for testing without server
     useEffect(() => {
-        if (state == UserState.Ready) {
+        if (state === UserState.Ready) {
             var id = window.setTimeout(() => {
                 setTicketData({
                     contactName: Math.random().toString(36).slice(2),

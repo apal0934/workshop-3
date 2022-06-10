@@ -63,6 +63,7 @@ const Ready = ({ userData, ticketData, state, callback }: ReadyProps) => {
     const handleCall = (event: React.MouseEvent) => {
         event.preventDefault();
 
+        // simulate dialling without server
         callback(UserState.Dialling, getTicketData());
 
         var id = window.setTimeout(() => {
