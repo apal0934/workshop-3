@@ -1,4 +1,4 @@
-enum ComponentState {
+enum UserState {
     LoggedOut,
     LoggedIn,
     OnBreak,
@@ -8,4 +8,4 @@ enum ComponentState {
     OnCall
 }
 
-export default ComponentState;
+export default UserState;

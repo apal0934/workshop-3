@@ -5,7 +5,7 @@ import { Col, Container, Stack, Row, Card } from "react-bootstrap";
 import Input from "../components/Input";
 import Select from "../components/Select";
 import PopulatedField from "../components/PopulatedField";
-import ComponentState from "../types/ComponentState";
+import UserState from "../types/ComponentState";
 
 interface ReadyProps {
     userData: {
@@ -20,7 +20,7 @@ interface ReadyProps {
         outcome: string;
         callbackDate: string;
     };
-    state: ComponentState;
+    state: UserState;
     callback: Function;
 }
 
@@ -56,23 +56,23 @@ const Ready = ({userData, ticketData, state, callback} : ReadyProps) => {
     }
 
   const handleBreak = (event: React.MouseEvent) => {
-    callback(ComponentState.OnBreak, getUserData(), getTicketData());
+    callback(UserState.OnBreak, getUserData(), getTicketData());
   }
 
   const handleCall = (event: React.MouseEvent) => {
-    callback(ComponentState.OnCall, getUserData(), getTicketData());
+    callback(UserState.OnCall, getUserData(), getTicketData());
   }
 
   const handleHangup = (event: React.MouseEvent) => {
-    callback(ComponentState.OffCall, getUserData(), getTicketData());
+    callback(UserState.OffCall, getUserData(), getTicketData());
   }
 
   const handleOutcome = (event: React.MouseEvent) => {
-    callback(ComponentState.Ready, getUserData(), getTicketData());
+    callback(UserState.Ready, getUserData(), getTicketData());
   }
 
   const handleCallback = (event: React.MouseEvent) => {
-    callback(ComponentState.Ready, getUserData(), getTicketData());
+    callback(UserState.Ready, getUserData(), getTicketData());
   }
 
   return (

@@ -1,34 +1,34 @@
 import React, { useState } from 'react';
 import { Container, Nav, Navbar } from 'react-bootstrap';
-import ComponentState from '../types/ComponentState';
+import UserState from '../types/ComponentState';
 
 interface HeaderProps {
-    state: ComponentState;
+    state: UserState;
 }
 
 const Header = ({state} : HeaderProps) => {
     var text: string;
 
     switch (state) {
-        case ComponentState.LoggedOut:
+        case UserState.LoggedOut:
             text = "Logged Out";
             break;
-        case ComponentState.LoggedIn:
+        case UserState.LoggedIn:
             text = "Logged In";
             break;
-        case ComponentState.Ready:
+        case UserState.Ready:
             text = "Ready";
             break;
-        case ComponentState.Dialling:
+        case UserState.Dialling:
             text = "Dialling...";
             break;
-        case ComponentState.OnCall:
+        case UserState.OnCall:
             text = "On Call";
             break;
-        case ComponentState.OffCall:
+        case UserState.OffCall:
             text = "Off Call";
             break;
-        case ComponentState.OnBreak:
+        case UserState.OnBreak:
             text = "On Break";
             break;
         default:

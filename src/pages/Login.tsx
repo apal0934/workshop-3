@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { Container, Stack } from 'react-bootstrap';
 import Input from '../components/Input';
-import ComponentState from '../types/ComponentState';
+import UserState from '../types/ComponentState';
 import LoginData from '../types/LoginData';
 
 interface LoginProps {
@@ -24,7 +24,7 @@ const LoginField = ({ loginData, callback }: LoginProps) => {
         setisLoggedIn(isLoggedIn);
        
         if (isLoggedIn) {
-            callback(ComponentState.LoggedIn, {
+            callback(UserState.LoggedIn, {
                 username: username,
                 password: password,
                 isLoggedIn: true
@@ -34,9 +34,9 @@ const LoginField = ({ loginData, callback }: LoginProps) => {
 
     const handleLogout = (event: React.MouseEvent) => {
         event.preventDefault();
-        
+
         setisLoggedIn(false);
-        callback(ComponentState.LoggedOut, {
+        callback(UserState.LoggedOut, {
             username: "",
             password: "",
             isLoggedIn: false
@@ -48,7 +48,7 @@ const LoginField = ({ loginData, callback }: LoginProps) => {
         event.preventDefault();
 
         if (isLoggedIn) {
-            callback(ComponentState.Ready, {
+            callback(UserState.Ready, {
                 username: username,
                 password: password,
                 isLoggedIn: true
