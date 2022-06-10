@@ -7,11 +7,12 @@ import UserState from "../types/ComponentState";
 import LoginData from "../types/LoginData";
 
 interface LoginProps {
+    state: UserState;
     loginData: LoginData;
     callback: Function;
 }
 
-const LoginField = ({ loginData, callback }: LoginProps) => {
+const LoginField = ({ state, loginData, callback }: LoginProps) => {
     const [username, setUsername] = useState(loginData.username);
     const [password, setPassword] = useState(loginData.password);
     const [isLoggedIn, setisLoggedIn] = useState(loginData.isLoggedIn);
@@ -55,6 +56,9 @@ const LoginField = ({ loginData, callback }: LoginProps) => {
         }
     };
 
+    var canLogin = state === UserState.LoggedOut;
+    var canReady = state === UserState.LoggedIn || state === UserState.OnBreak;
+
     return (
         <Form>
             <Container>
@@ -63,14 +67,14 @@ const LoginField = ({ loginData, callback }: LoginProps) => {
                         label="Username"
                         value={username}
                         onChange={e => setUsername(e.target.value)}
-                        disabled={isLoggedIn}
+                        disabled={!canLogin}
                     />
 
                     <Input
                         label="Password"
                         value={password}
                         onChange={e => setPassword(e.target.value)}
-                        disabled={isLoggedIn}
+                        disabled={!canLogin}
                     />
 
                     <Stack direction="horizontal" gap={1}>
@@ -84,7 +88,7 @@ const LoginField = ({ loginData, callback }: LoginProps) => {
                         <Button
                             variant="primary"
                             onClick={handleReady}
-                            disabled={!isLoggedIn}
+                            disabled={!canReady}
                             className="col-md-5 mx-auto"
                         >
                             Ready

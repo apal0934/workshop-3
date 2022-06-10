@@ -47,7 +47,7 @@ const MainPage = () => {
         case UserState.LoggedOut:
         case UserState.LoggedIn:
         case UserState.OnBreak:
-            body = <LoginField loginData={loginData} callback={handleUser} />;
+            body = <LoginField state={state} loginData={loginData} callback={handleUser} />;
             break;
         case UserState.Dialling:
         case UserState.OnCall:
