@@ -53,7 +53,7 @@ const MainPage = () => {
                     callbackDate: "",
                 });
                 setState(
-                    Math.random() > 0.5 ? UserState.OffCall : UserState.OnCall
+                    Math.random() > 0.5 ? UserState.Wrapping : UserState.OnCall
                 );
             }, 5000);
             setRandomTicketTimer(id);
@@ -76,7 +76,7 @@ const MainPage = () => {
             break;
         case UserState.Dialling:
         case UserState.OnCall:
-        case UserState.OffCall:
+        case UserState.Wrapping:
         case UserState.Ready:
             body = (
                 <Ready

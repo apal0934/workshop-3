@@ -50,9 +50,9 @@ const Ready = ({ userData, ticketData, state, callback }: ReadyProps) => {
             contactNumber: "",
             ticketType: "",
             outcome: "",
-            callbackDate: ""
-        }
-    }
+            callbackDate: "",
+        };
+    };
 
     const handleBreak = (event: React.MouseEvent) => {
         event.preventDefault();
@@ -76,7 +76,7 @@ const Ready = ({ userData, ticketData, state, callback }: ReadyProps) => {
         event.preventDefault();
 
         clearTimeout(dialTimer);
-        callback(UserState.OffCall, getTicketData());
+        callback(UserState.Wrapping, getTicketData());
     };
 
     const handleOutcome = (event: React.MouseEvent) => {
@@ -91,11 +91,10 @@ const Ready = ({ userData, ticketData, state, callback }: ReadyProps) => {
         callback(UserState.Ready, getEmptyTicketData());
     };
 
-    var canBreak = state === UserState.Ready;
     var canHangUp = state === UserState.Dialling || state === UserState.OnCall;
-    var canMakeCall = state === UserState.OffCall;
+    var canMakeCall = state === UserState.Wrapping;
     var canSubmitOutcome =
-        state === UserState.OffCall || state === UserState.OnCall;
+        state === UserState.Wrapping || state === UserState.OnCall;
     var canSubmitCallback = canSubmitOutcome;
 
     return (

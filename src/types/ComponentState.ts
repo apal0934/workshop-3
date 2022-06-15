@@ -4,7 +4,7 @@ enum UserState {
     LoggedIn,
     OnBreak,
     Ready,
-    OffCall,
+    Wrapping,
     Dialling,
     OnCall,
 }

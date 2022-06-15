@@ -28,8 +28,8 @@ const Header = ({ state }: HeaderProps) => {
         case UserState.OnCall:
             text = "On Call";
             break;
-        case UserState.OffCall:
-            text = "Off Call";
+        case UserState.Wrapping:
+            text = "Wrapping";
             break;
         case UserState.OnBreak:
             text = "On Break";
