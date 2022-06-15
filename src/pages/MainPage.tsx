@@ -80,6 +80,7 @@ const MainPage = () => {
                 />
             );
             break;
+        case UserState.Dialing:
         case UserState.Dialling:
         case UserState.OnCall:
         case UserState.OffCall:
