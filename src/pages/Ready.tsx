@@ -129,9 +129,7 @@ const Ready = ({ userData, ticketData, state, callback }: ReadyProps) => {
                             gap={2}
                             className="justify-content-center"
                         >
-                            <Button onClick={handleBreak} disabled={!canBreak}>
-                                Request Break
-                            </Button>
+                            <Button onClick={handleBreak}>Request Break</Button>
                         </Stack>
                     </Stack>
 
