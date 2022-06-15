@@ -1,6 +1,6 @@
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
-import UserState from "../types/ComponentState";
+import UserState from "../types/UserState";
 
 interface HeaderProps {
     state: UserState;
@@ -22,14 +22,15 @@ const Header = ({ state }: HeaderProps) => {
         case UserState.Ready:
             text = "Ready";
             break;
+        case UserState.Dialing:
         case UserState.Dialling:
-            text = "Dialling...";
+            text = "Dialing...";
             break;
         case UserState.OnCall:
             text = "On Call";
             break;
-        case UserState.Wrapping:
-            text = "Wrapping";
+        case UserState.OffCall:
+            text = "Off Call";
             break;
         case UserState.OnBreak:
             text = "On Break";

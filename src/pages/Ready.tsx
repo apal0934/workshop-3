@@ -8,86 +8,90 @@ import Row from "react-bootstrap/Row";
 import Card from "react-bootstrap/Card";
 import Select from "../components/Select";
 import PopulatedField from "../components/PopulatedField";
-import UserState from "../types/ComponentState";
-import UserData from "../types/UserData";
+import UserState, { Action, isValidAction } from "../types/UserState";
+import SessionData from "../types/SessionData";
 import TicketData from "../types/TicketData";
+import axios from "axios";
 
 interface ReadyProps {
-    userData: UserData;
-    ticketData: TicketData;
     state: UserState;
-    callback: Function;
+    sessionData: SessionData;
+    ticketData: TicketData;
 }
 
-const Ready = ({ userData, ticketData, state, callback }: ReadyProps) => {
+const Ready = ({ state, sessionData, ticketData }: ReadyProps) => {
     const [outcome, setOutcome] = useState(ticketData.outcome);
     const [callbackDate, setCallbackDate] = useState(ticketData.callbackDate);
-    const [dialTimer, setDialTimer] = useState<number>();
 
-    const options = ["Option 1", "Option 2"];
+    const options = [
+        { key: 200, value: "Resolved" },
+        { key: 201, value: "Forwarded" },
+        { key: 301, value: "Rejected" },
+    ];
 
-    const getTicketData = () => {
-        return {
-            contactName: ticketData.contactName,
-            contactNumber: ticketData.contactNumber,
-            ticketType: ticketData.ticketType,
-            outcome: outcome,
-            callbackDate: callbackDate,
-        };
+    const handleBreak = async (_event: React.MouseEvent) => {
+        try {
+            await axios.post("/request-break", {
+                sessionToken: sessionData.sessionToken,
+                user: sessionData.username,
+                campaign: sessionData.campaign,
+            });
+        } catch (error: any) {
+            console.error(error.response.data);
+        }
     };
 
-    const getEmptyTicketData = () => {
-        return {
-            contactName: "",
-            contactNumber: "",
-            ticketType: "",
-            outcome: "",
-            callbackDate: "",
-        };
+    const handleCall = async (_event: React.MouseEvent) => {
+        try {
+            await axios.post("/makecall", {
+                sessionToken: sessionData.sessionToken,
+                user: sessionData.username,
+                campaign: sessionData.campaign,
+                phoneNumber: ticketData.contactNumber,
+            });
+        } catch (error: any) {
+            console.error(error.response.data);
+        }
     };
 
-    const handleBreak = (event: React.MouseEvent) => {
-        event.preventDefault();
-
-        callback(UserState.OnBreak, getTicketData());
+    const handleHangup = async (_event: React.MouseEvent) => {
+        try {
+            await axios.post("/hangup", {
+                sessionToken: sessionData.sessionToken,
+                user: sessionData.username,
+                campaign: sessionData.campaign,
+            });
+        } catch (error: any) {
+            console.error(error.response.data);
+        }
     };
 
-    const handleCall = (event: React.MouseEvent) => {
-        event.preventDefault();
-
-        // simulate dialling without server
-        callback(UserState.Dialling, getTicketData());
-
-        var id = window.setTimeout(() => {
-            callback(UserState.OnCall, getTicketData());
-        }, 2000);
-        setDialTimer(id);
+    const handleOutcome = async (_event: React.MouseEvent) => {
+        console.log(outcome)
+        try {
+            await axios.post("/outcome", {
+                sessionToken: sessionData.sessionToken,
+                user: sessionData.username,
+                campaign: sessionData.campaign,
+                outcome: outcome,
+            });
+        } catch (error: any) {
+            console.error(error.response.data);
+        }
     };
 
-    const handleHangup = (event: React.MouseEvent) => {
-        event.preventDefault();
-
-        clearTimeout(dialTimer);
-        callback(UserState.Wrapping, getTicketData());
+    const handleCallback = async (_event: React.MouseEvent) => {
+        try {
+            await axios.post("/callback", {
+                sessionToken: sessionData.sessionToken,
+                user: sessionData.username,
+                campaign: sessionData.campaign,
+                callDateTime: callbackDate,
+            });
+        } catch (error: any) {
+            console.error(error.response.data);
+        }
     };
-
-    const handleOutcome = (event: React.MouseEvent) => {
-        event.preventDefault();
-
-        callback(UserState.Ready, getEmptyTicketData());
-    };
-
-    const handleCallback = (event: React.MouseEvent) => {
-        event.preventDefault();
-
-        callback(UserState.Ready, getEmptyTicketData());
-    };
-
-    var canHangUp = state === UserState.Dialling || state === UserState.OnCall;
-    var canMakeCall = state === UserState.Wrapping;
-    var canSubmitOutcome =
-        state === UserState.Wrapping || state === UserState.OnCall;
-    var canSubmitCallback = canSubmitOutcome;
 
     return (
         <Form>
@@ -98,19 +102,13 @@ const Ready = ({ userData, ticketData, state, callback }: ReadyProps) => {
                             <Col>
                                 <PopulatedField
                                     label="User:"
-                                    value={userData.username}
-                                />
-                            </Col>
-                            <Col>
-                                <PopulatedField
-                                    label="Extension:"
-                                    value={userData.extension}
+                                    value={sessionData.username}
                                 />
                             </Col>
                             <Col>
                                 <PopulatedField
                                     label="Campaign:"
-                                    value={userData.campaign}
+                                    value={sessionData.campaign}
                                 />
                             </Col>
                         </Stack>
@@ -133,44 +131,44 @@ const Ready = ({ userData, ticketData, state, callback }: ReadyProps) => {
                             <Stack gap={3}>
                                 <Stack gap={3}>
                                     <Row>
-                                        <Col>
+                                        <Col md={4}>
                                             <PopulatedField
                                                 label="Contact Name:"
                                                 value={ticketData.contactName}
                                             />
                                         </Col>
-                                        <Col>
-                                            <PopulatedField
-                                                label="Ticket Type:"
-                                                value={ticketData.ticketType}
-                                            />
+                                        <Col md={8}>
+                                            <Stack
+                                                direction="horizontal"
+                                                gap={3}
+                                            >
+                                                <Col>
+                                                    <PopulatedField
+                                                        label="Contact Number:"
+                                                        value={
+                                                            ticketData.contactNumber
+                                                        }
+                                                    />
+                                                </Col>
+
+                                                <Button
+                                                    variant="primary"
+                                                    onClick={handleCall}
+                                                    disabled={!isValidAction(state, Action.MakeCall)}
+                                                >
+                                                    Make Call
+                                                </Button>
+                                                <div className="vr" />
+                                                <Button
+                                                    variant="danger"
+                                                    onClick={handleHangup}
+                                                    disabled={!isValidAction(state, Action.HangUp)}
+                                                >
+                                                    Hang up
+                                                </Button>
+                                            </Stack>
                                         </Col>
                                     </Row>
-
-                                    <Stack direction="horizontal" gap={3}>
-                                        <Col>
-                                            <PopulatedField
-                                                label="Contact Number:"
-                                                value={ticketData.contactNumber}
-                                            />
-                                        </Col>
-
-                                        <Button
-                                            variant="primary"
-                                            onClick={handleCall}
-                                            disabled={!canMakeCall}
-                                        >
-                                            Make Call
-                                        </Button>
-                                        <div className="vr" />
-                                        <Button
-                                            variant="danger"
-                                            onClick={handleHangup}
-                                            disabled={!canHangUp}
-                                        >
-                                            Hang up
-                                        </Button>
-                                    </Stack>
                                 </Stack>
 
                                 <Stack gap={3}>
@@ -179,12 +177,12 @@ const Ready = ({ userData, ticketData, state, callback }: ReadyProps) => {
                                         options={options}
                                         value={outcome}
                                         onChange={e =>
-                                            setOutcome(e.target.value)
+                                            setOutcome(parseInt(e.target.value))
                                         }
                                     />
                                     <Button
                                         onClick={handleOutcome}
-                                        disabled={!canSubmitOutcome}
+                                        disabled={!isValidAction(state, Action.Submit)}
                                     >
                                         Submit Outcome
                                     </Button>
@@ -197,7 +195,7 @@ const Ready = ({ userData, ticketData, state, callback }: ReadyProps) => {
                                     />
                                     <Button
                                         onClick={handleCallback}
-                                        disabled={!canSubmitCallback}
+                                        disabled={!isValidAction(state, Action.Submit)}
                                     >
                                         Submit Callback
                                     </Button>

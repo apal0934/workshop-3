@@ -1,25 +1,26 @@
+import { TicketDataEvent } from "./Events";
+
 export interface Field {
     field: string;
     type: "text" | "numeric" | "datetime" | "guid";
     value: string;
 }
 
-export const fieldsToTicket = (fields: Array<Field>): TicketData | undefined => {
+export const ticketEventToTicketData = (event: TicketDataEvent): TicketData => {
     let ticketData: TicketData = {
         contactName: "",
         contactNumber: "",
         ticketType: "",
-        outcome: "",
+        outcome: 200,
         callbackDate: "",
     };
 
-    for (const field of fields) {
+    ticketData.contactNumber = event.phoneNumber;
+
+    for (const field of event.data) {
         switch (field.field) {
-            case "ContactName":
+            case "Name":
                 ticketData.contactName = field.value;
-                break;
-            case "ContactNumber":
-                ticketData.contactNumber = field.value;
                 break;
             case "TicketType":
                 ticketData.ticketType = field.value;
@@ -29,15 +30,13 @@ export const fieldsToTicket = (fields: Array<Field>): TicketData | undefined => 
         }
     }
 
-    if (ticketData.contactName === "" || ticketData.contactNumber === "" || ticketData.ticketType === "") return undefined;
-    
     return ticketData;
 };
 
 export default interface TicketData {
     contactName: string;
     contactNumber: string;
-    ticketType: string;
-    outcome: string;
+    ticketType?: string;
+    outcome: number;
     callbackDate: string;
 }

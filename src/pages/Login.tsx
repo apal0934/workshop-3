@@ -4,81 +4,129 @@ import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Stack from "react-bootstrap/Stack";
 import Input from "../components/Input";
-import UserState from "../types/ComponentState";
-import LoginData from "../types/LoginData";
+import UserState, { Action, isValidAction } from "../types/UserState";
+import axios from "axios";
+import SessionData from "../types/SessionData";
 
 interface LoginProps {
     state: UserState;
-    loginData: LoginData;
-    callback: Function;
+    sessionData: SessionData;
+    updateSessionData: (sessionData: Partial<SessionData>) => void;
 }
 
-const LoginField = ({ state, loginData, callback }: LoginProps) => {
-    const [username, setUsername] = useState(loginData.username);
-    const [password, setPassword] = useState(loginData.password);
-    const [isLoggedIn, setisLoggedIn] = useState(loginData.isLoggedIn);
-    const [serverAddress, setServerAddress] = useState(loginData.serverAddress);
+const LoginField = ({ state, sessionData, updateSessionData }: LoginProps) => {
+    const [username, setUsername] = useState(sessionData.username);
+    const [password, setPassword] = useState(sessionData.password);
+    const [serverAddress, setServerAddress] = useState(
+        sessionData.serverAddress
+    );
+    const [sessionToken, setSessionToken] = useState(sessionData.sessionToken);
 
-    const handleConnect = (event: React.MouseEvent) => {
-        event.preventDefault();
+    const handleConnect = async (_event: React.MouseEvent) => {
+        let address = serverAddress;
 
-        // check connection
-        var didConnect = true;
-        if (didConnect) {
-            callback(UserState.LoggedOut, {
+        if (!address.startsWith("http://")) {
+            address = "http://" + address;
+        }
+        if (address.startsWith("https")) {
+            address.replace("https", "http");
+        }
+        if (!address.endsWith("/")) {
+            address = address + "/";
+        }
+
+        setServerAddress(address);
+        axios.defaults.baseURL = address + "api";
+
+        try {
+            await axios.get("/service-status");
+        } catch (error) {
+            alert("Could not connect to server!");
+            return;
+        }
+
+        try {
+            const createSessionResponse = await axios.post("/session-create", {
+                User: username,
+            });
+
+            setSessionToken(createSessionResponse.data.sessionToken);
+            updateSessionData({
+                serverAddress: address,
+                sessionToken: createSessionResponse.data.sessionToken,
+                username: username,
+            });
+        } catch (error: any) {
+            console.error(error.response.data);
+        }
+    };
+
+    const handleDisconnect = async (_event: React.MouseEvent) => {
+        try {
+            await axios.post("/session-release", {
+                SessionToken: sessionToken,
+            });
+
+            updateSessionData({
+                serverAddress: "",
+                sessionToken: "",
                 username: "",
                 password: "",
-                isLoggedIn: false,
-                serverAddress: serverAddress
             });
+        } catch (error: any) {
+            console.error(error.response.data);
         }
     };
 
-    const handleLogin = (event: React.MouseEvent) => {
-        event.preventDefault();
+    const handleLogin = async (_event: React.MouseEvent) => {
+        try {
+            await axios.post("/login", {
+                SessionToken: sessionToken,
+                User: username,
+                Password: password,
+            });
 
-        // check credentials agaisnt server
-        var isLoggedIn = true;
-        setisLoggedIn(isLoggedIn);
-
-        if (isLoggedIn) {
-            callback(UserState.LoggedIn, {
+            updateSessionData({
+                serverAddress: serverAddress,
+                sessionToken: sessionToken,
                 username: username,
                 password: password,
-                isLoggedIn: true,
-                serverAddress: serverAddress
             });
+        } catch (error: any) {
+            console.error(error.response.data);
         }
     };
 
-    const handleLogout = (event: React.MouseEvent) => {
-        event.preventDefault();
-
-        setisLoggedIn(false);
-        callback(UserState.LoggedOut, {
-            username: "",
-            password: "",
-            isLoggedIn: false,
-            serverAddress: serverAddress
-        });
-    };
-
-    const handleReady = (event: React.MouseEvent) => {
-        event.preventDefault();
-
-        if (isLoggedIn) {
-            callback(UserState.Ready, {
-                username: username,
-                password: password,
-                isLoggedIn: true,
-                serverAddress: serverAddress
+    const handleLogout = async (_event: React.MouseEvent) => {
+        try {
+            await axios.post("/request-logout", {
+                SessionToken: sessionToken,
+                User: username,
+                Campaign: "Tickets",
             });
+
+            updateSessionData({
+                serverAddress: serverAddress,
+                sessionToken: "",
+                username: "",
+                password: "",
+            });
+        } catch (error: any) {
+            console.error(error.response.data);
         }
     };
 
-    var canConnect = state === UserState.Disconnected;
-    var canLogin = state === UserState.LoggedOut;
-    var canReady = state === UserState.LoggedIn || state === UserState.OnBreak;
+    const handleReady = async (_event: React.MouseEvent) => {
+        try {
+            await axios.post("/resume", {
+                SessionToken: sessionToken,
+                User: username,
+                Campaign: "Tickets",
+            });
+        } catch (error: any) {
+            console.error(error.response.data);
+        }
+    };
 
     return (
         <Form>
@@ -88,36 +136,58 @@ const LoginField = ({ state, loginData, callback }: LoginProps) => {
                         label="Server Address:"
                         value={serverAddress}
                         onChange={e => setServerAddress(e.target.value)}
-                        disabled={!canConnect}
+                        disabled={!isValidAction(state, Action.Connect)}
                     />
-                    <Button onClick={handleConnect} disabled={!canConnect}>
-                        Connect
-                    </Button>
-
                     <Input
-                        label="Username:"
+                        label="User:"
                         value={username}
                         onChange={e => setUsername(e.target.value)}
-                        disabled={!canLogin}
+                        disabled={!isValidAction(state, Action.Connect)}
                     />
+                    {isValidAction(state, Action.Connect) ? (
+                        <Button
+                            onClick={handleConnect}
+                            disabled={!isValidAction(state, Action.Connect)}
+                        >
+                            Create session
+                        </Button>
+                    ) : (
+                        <Button
+                            onClick={handleDisconnect}
+                            disabled={!isValidAction(state, Action.Disconnect)}
+                        >
+                            Disconnect session
+                        </Button>
+                    )}
 
                     <Input
                         label="Password:"
                         value={password}
                         onChange={e => setPassword(e.target.value)}
-                        disabled={!canLogin}
+                        disabled={!isValidAction(state, Action.Login)}
                     />
 
                     <Stack direction="horizontal" gap={1}>
-                        <Button
-                            onClick={isLoggedIn ? handleLogout : handleLogin}
-                            className="col-md-5 mx-auto"
-                        >
-                            {isLoggedIn ? "Logout" : "Login"}
-                        </Button>
+                        {isValidAction(state, Action.Login) ? (
+                            <Button
+                                onClick={handleLogin}
+                                disabled={!isValidAction(state, Action.Login)}
+                                className="col-md-5 mx-auto"
+                            >
+                                Login
+                            </Button>
+                        ) : (
+                            <Button
+                                onClick={handleLogout}
+                                disabled={!isValidAction(state, Action.Logout)}
+                                className="col-md-5 mx-auto"
+                            >
+                                Logout
+                            </Button>
+                        )}
                         <Button
                             onClick={handleReady}
-                            disabled={!canReady}
+                            disabled={!isValidAction(state, Action.Ready)}
                             className="col-md-5 mx-auto"
                         >
                             Ready

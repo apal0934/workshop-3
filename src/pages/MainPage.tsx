@@ -1,64 +1,70 @@
-import React, { ReactElement, useEffect, useState } from "react";
-import UserState from "../types/ComponentState";
+import React, { ReactElement, useState } from "react";
+import UserState from "../types/UserState";
 import Header from "../components/Header";
-import LoginData from "../types/LoginData";
-import TicketData from "../types/TicketData";
-import UserData from "../types/UserData";
+import TicketData, { ticketEventToTicketData } from "../types/TicketData";
+import SessionData from "../types/SessionData";
 import LoginField from "./Login";
 import Ready from "./Ready";
+import axios from "axios";
+import {
+    isErrorEvent,
+    isStatusChangeEvent,
+    isTicketDataEvent,
+} from "../types/Events";
 
 const MainPage = () => {
+    const [pollTimer, setPollTimer] = useState<number | undefined>();
     const [state, setState] = useState(UserState.Disconnected);
-    const [loginData, setLoginData] = useState<LoginData>({
+
+    const [sessionData, setSessionData] = useState<SessionData>({
+        serverAddress: "",
+        sessionToken: "",
         username: "",
         password: "",
-        isLoggedIn: false,
-        serverAddress: "",
+        campaign: "Tickets",
     });
-    const [userData, setUserData] = useState<UserData>({
-        username: "",
-        extension: "",
-        campaign: "",
-    });
+
     const [ticketData, setTicketData] = useState<TicketData>({
         contactName: "",
         contactNumber: "",
         ticketType: "",
-        outcome: "",
+        outcome: 200,
         callbackDate: "",
     });
-    const [randomTicketTimer, setRandomTicketTimer] = useState<number>();
 
-    const handleUser = (state: UserState, loginData: LoginData) => {
-        setState(state);
-        setLoginData(loginData);
-        clearTimeout(randomTicketTimer);
-    };
-
-    const handleReady = (state: UserState, ticketData: TicketData) => {
-        setState(state);
-        setTicketData(ticketData);
-        clearTimeout(randomTicketTimer);
-    };
-
-    // Give random ticket every five seconds for testing without server
-    useEffect(() => {
-        if (state === UserState.Ready) {
-            var id = window.setTimeout(() => {
-                setTicketData({
-                    contactName: Math.random().toString(36).slice(2),
-                    contactNumber: Math.random().toString(),
-                    ticketType: Math.random().toString(36).slice(2),
-                    outcome: "",
-                    callbackDate: "",
-                });
-                setState(
-                    Math.random() > 0.5 ? UserState.Wrapping : UserState.OnCall
-                );
-            }, 5000);
-            setRandomTicketTimer(id);
+    const pollData = async (token: string, user: string, campaign: string) => {
+        try {
+            const event = await axios.post("/poll-event", {
+                sessionToken: token,
+                user: user,
+                campaign: campaign,
+            });
+            if (isStatusChangeEvent(event.data)) {
+                const newState: UserState = UserState[event.data.status as keyof typeof UserState];
+                setState(newState);
+            } else if (isTicketDataEvent(event.data)) {
+                setTicketData(ticketEventToTicketData(event.data));
+            } else if (isErrorEvent(event.data)) {
+                console.log(event.data.errorMessage);
+            }
+        } catch (error: any) {
+            window.clearInterval(pollTimer);
+            console.log(error.response.data);
         }
-    }, [state]);
+    };
+
+    const updateSessionData = (data: Partial<SessionData>) => {
+        setSessionData({ ...sessionData, ...data });
+        if (state === UserState.Disconnected) {
+            setState(UserState.LoggedOut);
+            let fn = () => pollData(data.sessionToken!, data.username!, data.campaign!);
+            setPollTimer(window.setInterval(fn, 2000));
+        }
+        if (Object.values(data).every(entry => entry === "")) {
+            window.clearInterval(pollTimer);
+            setState(UserState.Disconnected);
+        }
+    };
 
     var body: Element | ReactElement<any, any>;
     switch (state) {
@@ -69,21 +75,20 @@ const MainPage = () => {
             body = (
                 <LoginField
                     state={state}
-                    loginData={loginData}
-                    callback={handleUser}
+                    sessionData={sessionData}
+                    updateSessionData={updateSessionData}
                 />
             );
             break;
         case UserState.Dialling:
         case UserState.OnCall:
-        case UserState.Wrapping:
+        case UserState.OffCall:
         case UserState.Ready:
             body = (
                 <Ready
-                    userData={userData}
-                    ticketData={ticketData}
-                    callback={handleReady}
                     state={state}
+                    sessionData={sessionData}
+                    ticketData={ticketData}
                 />
             );
             break;

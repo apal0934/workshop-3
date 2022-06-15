@@ -4,7 +4,7 @@ import Form from "react-bootstrap/Form";
 
 interface SelectProps extends FormSelectProps {
     label: string;
-    options: string[];
+    options: Array<{key: number, value: string}>;
 }
 
 const Select = ({ label, options, ...props }: SelectProps) => {
@@ -13,7 +13,7 @@ const Select = ({ label, options, ...props }: SelectProps) => {
             <FloatingLabel label={label}>
                 <Form.Select {...props}>
                     {options.map(option => (
-                        <option key={option}>{option}</option>
+                        <option key={option.key} value={option.key}>{`${option.key} - ${option.value}`}</option>
                     ))}
                 </Form.Select>
             </FloatingLabel>
