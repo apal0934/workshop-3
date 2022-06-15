@@ -25,11 +25,11 @@ const LoginField = ({ state, sessionData, updateSessionData }: LoginProps) => {
     const handleConnect = async (_event: React.MouseEvent) => {
         let address = serverAddress;
 
+        if (address.startsWith("https")) {
+            address = address.replace("https", "http");
+        }
         if (!address.startsWith("http://")) {
             address = "http://" + address;
-        }
-        if (address.startsWith("https")) {
-            address.replace("https", "http");
         }
         if (!address.endsWith("/")) {
             address = address + "/";
