@@ -36,20 +36,12 @@ export const isValidAction = (state: UserState, action: Action): boolean => {
         case UserState.Ready:
             return action === Action.RequestBreak;
         case UserState.OffCall:
-            return (
-                action === Action.MakeCall ||
-                action === Action.RequestBreak ||
-                action === Action.Submit
-            );
+            return action === Action.MakeCall || action === Action.RequestBreak || action === Action.Submit
         case UserState.Dialling:
         case UserState.Dialing:
             return action === Action.HangUp || action === Action.RequestBreak;
         case UserState.OnCall:
-            return (
-                action === Action.HangUp ||
-                action === Action.RequestBreak ||
-                action === Action.Submit
-            );
+            return action === Action.HangUp || action === Action.RequestBreak || action === Action.Submit
         default:
             return false;
     }
