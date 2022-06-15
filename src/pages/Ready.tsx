@@ -9,20 +9,12 @@ import Card from "react-bootstrap/Card";
 import Select from "../components/Select";
 import PopulatedField from "../components/PopulatedField";
 import UserState from "../types/ComponentState";
+import UserData from "../types/UserData";
+import TicketData from "../types/TicketData";
 
 interface ReadyProps {
-    userData: {
-        username: string;
-        extension: string;
-        campaign: string;
-    };
-    ticketData: {
-        contactName: string;
-        contactNumber: string;
-        ticketType: string;
-        outcome: string;
-        callbackDate: string;
-    };
+    userData: UserData;
+    ticketData: TicketData;
     state: UserState;
     callback: Function;
 }
