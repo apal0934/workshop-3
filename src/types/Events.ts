@@ -3,7 +3,7 @@ import { Field } from "./TicketData";
 export interface StatusChangeEvent {
     sessionToken: string;
     event: string;
-    user: string,
+    user: string;
     campaign: string;
     expiry: string;
 }
